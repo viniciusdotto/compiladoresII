@@ -1,8 +1,13 @@
+#Vinícius Dotto de Arruda Figueiredo
+#Analisador Léxico da Linguagem Lalg
+
+
+
 import nltk
 
-palavraReservada = ('program','var','real','integer','if', 'then', 'while', 'do', 'write', 'read', 'else', 'begin', 'end', '$')
+palavraReservada = ('program','procedure', 'var','real','integer','if', 'then', 'while', 'do', 'write', 'read', 'else', 'begin', 'end', '$')
 terminais = (' ', '\t', '\n', ',', '(', ')', ';', ':', ',', '*', '/', '+', '-', '<>', '>=', '>', '<', ':=')
-delimitador = ('(', ')', ';', ':', ',')
+delimitador = ('(', ')', ';', ':', ',','.')
 operador = ('*', '/', '+', '-', '<>', '>=', '>', '<', ':=')
 
 class Token:
@@ -26,18 +31,28 @@ def lexico():
             tokenizer = nltk.WordPunctTokenizer()
             termList = tokenizer.tokenize(l)
             for indice, j in enumerate(termList):
-                if j == '/*':
+                if j == ');':
+                    if notComent1 and notComent2:
+                        tokens.append(Token(')', "delimitador", i+1))
+                        tokens.append(Token(';', "delimitador", i+1))
+                elif j == '/*':
                     if notComent2 == 1:
                         notComent1 = 0
                 elif j == '{':
                     if notComent1 == 1:
                         notComent2 = 0
-                elif j == '*/':
+                elif j == '*/' or (j[(len(j) - 1)] == '*' and j[(len(j) - 1)] == '/'):
                     if notComent1 == 0:
                         notComent1 = 1
-                elif j == '}':
+                    else:
+                        print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('*/') + ".\nLinha: " + str(i+1))
+                        exit()        
+                elif j == '}' or j[(len(j) - 1)] == '}':
                     if notComent2 == 0:
                         notComent2 = 1
+                    else:
+                        print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('}') + ".\nLinha: " + str(i+1))
+                        exit()       
                 elif j in palavraReservada:
                     if notComent1 and notComent2:
                         tokens.append(Token(j, "reservada", i+1))
@@ -53,11 +68,8 @@ def lexico():
                             if termList[indice+1] == '.':
                                 numero = str(termList[indice]) + str(termList[indice+1]) + str(termList[indice+2])
                                 tokens.append(Token(numero, "numero_real", i+1))
-                                print (termList)
                                 del termList [indice+1]
-                                print (termList)
                                 del termList [indice+1]
-                                print (termList)
                             else: 
                                 tokens.append(Token(j, "numero_int", i+1))
                         else:
@@ -67,11 +79,11 @@ def lexico():
                         if j[0].isalpha():
                             tokens.append(Token(j, "ident", i+1))
                         elif j[0].isdigit():
-                            print ("Erro lexico")
+                            print ("Erro lexico, identificador nao pode começar com numero.\nValor encontrado: " + str(j) + ".\nLinha: " + str(i+1))
                             exit()
                 elif j:
                     if notComent1 and notComent2:
-                        print ("Erro lexico")
+                        print ("Erro lexico, simbolo invalido\nValor encontrado: " + str(j) + ".\nLinha: " + str(i+1))
                         exit()    
         for i in tokens:
             print ('[', i, ']')
@@ -80,5 +92,5 @@ def lexico():
 
 
 if __name__ == '__main__':
-	lexico()
-	
+    lexico()
+    	
