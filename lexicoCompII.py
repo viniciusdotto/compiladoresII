@@ -44,13 +44,13 @@ def lexico():
                 elif j == '*/' or (j[(len(j) - 1)] == '*' and j[(len(j) - 1)] == '/'):
                     if notComent1 == 0:
                         notComent1 = 1
-                    else:
+                    elif notComent1 and notComent2:
                         print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('*/') + ".\nLinha: " + str(i+1))
                         exit()        
                 elif j == '}' or j[(len(j) - 1)] == '}':
                     if notComent2 == 0:
                         notComent2 = 1
-                    else:
+                    elif notComent1 and notComent2:
                         print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('}') + ".\nLinha: " + str(i+1))
                         exit()       
                 elif j in palavraReservada:
