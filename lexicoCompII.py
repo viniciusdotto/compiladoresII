@@ -1,6 +1,6 @@
 #Vinícius Dotto de Arruda Figueiredo
 #Analisador Léxico da Linguagem Lalg
-
+#usar find() pra resolver o erro
 
 
 import nltk
@@ -35,21 +35,35 @@ def lexico():
                     if notComent1 and notComent2:
                         tokens.append(Token(')', "delimitador", i+1))
                         tokens.append(Token(';', "delimitador", i+1))
-                elif j == '/*':
+                elif j.find('/*') != -1:
+                    aux = j.find('/*')
                     if notComent2 == 1:
-                        notComent1 = 0
-                elif j == '{':
+                        if aux != 0:
+                            termList.insert(indice+1, j[:aux])
+                            termList.insert(indice+2, j[aux:])
+                        else:
+                            notComent1 = 0
+                elif j.find('{') != -1:
+                    aux = j.find('{')
                     if notComent1 == 1:
-                        notComent2 = 0
-                elif j == '*/' or (j[(len(j) - 1)] == '*' and j[(len(j) - 1)] == '/'):
+                        if aux != 0:
+                            termList.insert(indice+1, j[:aux])
+                            termList.insert(indice+2, j[aux:])
+                        else:
+                            notComent2 = 0
+                elif j.find('*/') != -1:
+                    aux = j.find('*/')
                     if notComent1 == 0:
                         notComent1 = 1
+                        termList.insert(indice+1, j[aux+2:])
                     elif notComent1 and notComent2:
                         print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('*/') + ".\nLinha: " + str(i+1))
                         exit()        
-                elif j == '}' or j[(len(j) - 1)] == '}':
+                elif j.find('}') != -1:
+                    aux = j.find('}')
                     if notComent2 == 0:
                         notComent2 = 1
+                        termList.insert(indice+1, j[aux+1:])
                     elif notComent1 and notComent2:
                         print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('}') + ".\nLinha: " + str(i+1))
                         exit()       
@@ -93,4 +107,3 @@ def lexico():
 
 if __name__ == '__main__':
     lexico()
-    	
