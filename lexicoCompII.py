@@ -6,9 +6,10 @@
 import nltk
 
 palavraReservada = ('program','procedure', 'var','real','integer','if', 'then', 'while', 'do', 'write', 'read', 'else', 'begin', 'end', '$')
-terminais = (' ', '\t', '\n', ',', '(', ')', ';', ':', ',', '*', '/', '+', '-', '<>', '>=', '>', '<', ':=')
+terminais = (' ', '\t', '\n', ',', '(', ')', ';', ':', ',', '*', '/', '+', '-', '<>', '>=', '>', '<', ':=', '=')
 delimitador = ('(', ')', ';', ':', ',','.')
-operador = ('*', '/', '+', '-', '<>', '>=', '>', '<', ':=')
+operador = ('*', '/', '+', '-', ':=')
+relacionais = ('=', '<>', '>=', '<=', '>', '<')
 
 class Token:
     def __init__(self, _value, _type, _line):
@@ -76,6 +77,9 @@ def lexico():
                 elif j in operador:
                     if notComent1 and notComent2:
                         tokens.append(Token(j, "operador", i+1))
+                elif j in relacionais:
+                    if notComent1 and notComent2:
+                        tokens.append(Token(j, "relacional", i+1))
                 elif j.isnumeric():
                     if notComent1 and notComent2:
                         if (len(termList) - 2) > indice:                         
@@ -99,11 +103,9 @@ def lexico():
                     if notComent1 and notComent2:
                         print ("Erro lexico, simbolo invalido\nValor encontrado: " + str(j) + ".\nLinha: " + str(i+1))
                         exit()    
+        print('\n Cadeia de Tokens aceita')
         for i in tokens:
             print ('[', i, ']')
-        print('\n Cadeia aceita')
         return tokens      
 
 
-if __name__ == '__main__':
-    lexico()
