@@ -32,9 +32,14 @@ def lexico():
             tokenizer = nltk.WordPunctTokenizer()
             termList = tokenizer.tokenize(l)
             for indice, j in enumerate(termList):
-                if j == ');':
+                if j.find(')') == 0:
                     if notComent1 and notComent2:
                         tokens.append(Token(')', "delimitador", i+1))
+                        print (j)
+                        termList.insert(indice+1, j[1:])
+                elif j == '$;':  
+                    if notComent1 and notComent2:
+                        tokens.append(Token('$', "delimitador", i+1))
                         tokens.append(Token(';', "delimitador", i+1))
                 elif j.find('/*') != -1:
                     aux = j.find('/*')
@@ -67,7 +72,7 @@ def lexico():
                         termList.insert(indice+1, j[aux+1:])
                     elif notComent1 and notComent2:
                         print ("Erro lexico, fim de comentário não esperado.\nValor encontrado: " + str('}') + ".\nLinha: " + str(i+1))
-                        exit()       
+                        exit()     
                 elif j in palavraReservada:
                     if notComent1 and notComent2:
                         tokens.append(Token(j, "reservada", i+1))
