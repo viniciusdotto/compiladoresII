@@ -35,7 +35,6 @@ def lexico():
                 if j.find(')') == 0:
                     if notComent1 and notComent2:
                         tokens.append(Token(')', "delimitador", i+1))
-                        print (j)
                         termList.insert(indice+1, j[1:])
                 elif j == '$;':  
                     if notComent1 and notComent2:
